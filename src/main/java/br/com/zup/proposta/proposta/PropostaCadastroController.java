@@ -2,7 +2,6 @@ package br.com.zup.proposta.proposta;
 
 import br.com.zup.proposta.proposta.cartao.AnaliseClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,4 +37,5 @@ public class PropostaCadastroController {
         URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).body(new PropostaCadastroResponse(proposta));
     }
+
 }
