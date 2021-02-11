@@ -60,11 +60,6 @@ public class PropostaCadastroRequest {
     }
 
     public boolean isDocumentoCadastrado(PropostaRepository repository) {
-        notNull(this.documento, "O documento não pode ser null.");
-        Optional<Proposta> proposta = repository.findByDocumento(this.documento);
-        if(proposta.isEmpty()){
-            return false;
-        }
-        return true;
+        return repository.existsByDocumento(this.documento);
     }
 }

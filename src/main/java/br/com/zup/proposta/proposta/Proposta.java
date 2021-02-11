@@ -1,10 +1,19 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.proposta.cartao.AnaliseClient;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.endereco.Endereco;
+import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -33,6 +42,12 @@ public class Proposta {
     @Embedded
     private Endereco endereco;
 
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.NAO_ELEGIVEL;
+
+    @Deprecated
+    Proposta(){}
+
     public Proposta(@NotBlank String nome,
                     @Email String email,
                     @Valid @NotBlank String documento,
@@ -53,4 +68,18 @@ public class Proposta {
         return nome;
     }
 
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void definirStatus(AnaliseClient analise, PropostaRepository propostaRepository) {
+        try {
+            SolicitacaoAnaliseResponse analiseResponse = analise.solicitacaoAnalise(new SolicitacaoAnaliseRequest(this));
+            this.status = Status.getStatus(analiseResponse);
+            propostaRepository.save(this);
+        }catch(FeignException exception){
+            Logger logger = LoggerFactory.getLogger(Proposta.class);
+            logger.info("FeignException - CADASTRO DE DOCUMENTO COM INICIO 3.");
+        }
+    }
 }

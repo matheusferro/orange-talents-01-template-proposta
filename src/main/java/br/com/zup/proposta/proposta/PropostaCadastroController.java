@@ -1,12 +1,13 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.proposta.cartao.AnaliseClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -14,12 +15,13 @@ import java.net.URI;
 public class PropostaCadastroController {
 
     private final PropostaRepository propostaRepository;
+    private final AnaliseClient analise;
 
-    public PropostaCadastroController(PropostaRepository propostaRepository) {
+    public PropostaCadastroController(PropostaRepository propostaRepository, AnaliseClient analise) {
         this.propostaRepository = propostaRepository;
+        this.analise = analise;
     }
 
-    @Transactional
     @PostMapping("/proposta")
     public ResponseEntity<PropostaCadastroResponse> criar(@RequestBody @Valid PropostaCadastroRequest request,
                                    UriComponentsBuilder uriBuilder){
@@ -31,8 +33,9 @@ public class PropostaCadastroController {
         Proposta proposta = request.toModel();
         propostaRepository.save(proposta);
 
-        URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();
+        proposta.definirStatus(analise, propostaRepository);
 
+        URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).body(new PropostaCadastroResponse(proposta));
     }
 }
