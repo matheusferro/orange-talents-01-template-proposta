@@ -1,6 +1,5 @@
 package br.com.zup.proposta.proposta;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +21,13 @@ public class PropostaCadastroController {
 
     @Transactional
     @PostMapping("/proposta")
-    public ResponseEntity<?> criar(@RequestBody @Valid PropostaCadastroRequest request,
+    public ResponseEntity<PropostaCadastroResponse> criar(@RequestBody @Valid PropostaCadastroRequest request,
                                    UriComponentsBuilder uriBuilder){
-        System.out.println("[inicio]");
+
+        if(request.isDocumentoCadastrado(propostaRepository)){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
         Proposta proposta = request.toModel();
         propostaRepository.save(proposta);
 

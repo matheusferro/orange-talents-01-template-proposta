@@ -24,6 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ControllerProposta {
 
     @Autowired
+    private PropostaRepository propostaRepository;
+
+    @Autowired
     private ObjectMapper jsonMapper;
 
     @Autowired
@@ -49,5 +52,39 @@ public class ControllerProposta {
                         )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nome").value("nomeTeste"));
+    }
+
+    @Test
+    @DisplayName("Cadastro de uma proposta com documento já cadastrado.")
+    public void cadastroPropostaDocJaCadastrado() throws Exception {
+        PropostaCadastroRequest propostaValida = new PropostaCadastroRequestBuilder()
+                .comNome("nomeTeste")
+                .comEmail("email@teste.com.br")
+                .comDocumento("576.984.370-51")
+                .comSalario(new BigDecimal(200))
+                .comCep("0000-000")
+                .comLogradouro("Rua do meio")
+                .comNumero("10")
+                .comComplemento("Perto da lojinha.")
+                .finalizar();
+
+        propostaRepository.save(propostaValida.toModel());
+
+        PropostaCadastroRequest propostaInalida = new PropostaCadastroRequestBuilder()
+                .comNome("nomeTeste")
+                .comEmail("emailValido@teste.com.br")
+                .comDocumento("576.984.370-51")
+                .comSalario(new BigDecimal(200))
+                .comCep("0000-000")
+                .comLogradouro("Rua do meio")
+                .comNumero("10")
+                .comComplemento("Perto da lojinha.")
+                .finalizar();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/proposta")
+                .content(jsonMapper.writeValueAsString(propostaInalida))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isUnprocessableEntity());
     }
 }

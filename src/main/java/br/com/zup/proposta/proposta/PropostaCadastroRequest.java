@@ -12,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.Optional;
+
+import static org.springframework.util.Assert.notNull;
 
 public class PropostaCadastroRequest {
 
@@ -27,7 +30,6 @@ public class PropostaCadastroRequest {
 
     @CPForCNPJ
     @NotBlank
-    @UniqueValue(domainClass = Proposta.class, fieldName = "documento")
     @JsonProperty
     private String documento;
 
@@ -55,5 +57,14 @@ public class PropostaCadastroRequest {
     public Proposta toModel() {
         Endereco endereco = this.endereco.toModel();
         return new Proposta(nome, email, documento, salario, endereco);
+    }
+
+    public boolean isDocumentoCadastrado(PropostaRepository repository) {
+        notNull(this.documento, "O documento não pode ser null.");
+        Optional<Proposta> proposta = repository.findByDocumento(this.documento);
+        if(proposta.isEmpty()){
+            return false;
+        }
+        return true;
     }
 }
