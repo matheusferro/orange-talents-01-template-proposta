@@ -16,6 +16,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+import static org.springframework.util.Assert.notNull;
+
 @Entity
 public class Proposta {
 
@@ -45,6 +47,8 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private Status status = Status.NAO_ELEGIVEL;
 
+    private String numeroCartao;
+
     @Deprecated
     Proposta(){}
 
@@ -72,6 +76,12 @@ public class Proposta {
         return documento;
     }
 
+    /**
+     * Define status com base no resultado recebido da api de verificação
+     * de elegibilidade.
+     * @param analise
+     * @param propostaRepository
+     */
     public void definirStatus(AnaliseClient analise, PropostaRepository propostaRepository) {
         try {
             SolicitacaoAnaliseResponse analiseResponse = analise.solicitacaoAnalise(new SolicitacaoAnaliseRequest(this));
@@ -81,5 +91,18 @@ public class Proposta {
             Logger logger = LoggerFactory.getLogger(Proposta.class);
             logger.info("FeignException - CADASTRO DE DOCUMENTO COM INICIO 3.");
         }
+    }
+
+    /**
+     * Metodo utilizado no scheduler para cadastro de número do cartão.
+     * @param numeroCartao
+     * @param propostaRepository
+     */
+    public void definirCartao(String numeroCartao, PropostaRepository propostaRepository) {
+        notNull(numeroCartao, "Não é possível definir null para o valor do cartão.");
+        notNull(propostaRepository, "Repository invalido.");
+        this.numeroCartao = numeroCartao;
+        this.status = Status.CONCLUIDO;
+        propostaRepository.save(this);
     }
 }
