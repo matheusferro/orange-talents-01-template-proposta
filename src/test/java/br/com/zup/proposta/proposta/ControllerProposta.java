@@ -1,12 +1,19 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.proposta.cartao.AnaliseClient;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.request.PropostaCadastroRequestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,11 +25,13 @@ import java.math.BigDecimal;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 public class ControllerProposta {
+
+    @MockBean
+    private AnaliseClient client;
 
     @Autowired
     private PropostaRepository propostaRepository;
@@ -47,6 +56,13 @@ public class ControllerProposta {
                 .comComplemento("Perto da lojinha.")
                 .finalizar();
 
+        SolicitacaoAnaliseResponse response = new SolicitacaoAnaliseResponse("576.984.370-51",
+                "nomeTeste",
+                1L,
+                "ELEGIVEL");
+
+        Mockito.when(client.solicitacaoAnalise(ArgumentMatchers.notNull())).thenReturn(response);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/proposta")
                             .content(jsonMapper.writeValueAsString(request))
                             .contentType(MediaType.APPLICATION_JSON)
@@ -70,6 +86,13 @@ public class ControllerProposta {
                 .finalizar();
 
         propostaRepository.save(propostaValida.toModel());
+
+        SolicitacaoAnaliseResponse response = new SolicitacaoAnaliseResponse("576.984.370-51",
+                "nomeTeste",
+                1L,
+                "ELEGIVEL");
+
+        Mockito.when(client.solicitacaoAnalise(ArgumentMatchers.notNull())).thenReturn(response);
 
         PropostaCadastroRequest propostaInalida = new PropostaCadastroRequestBuilder()
                 .comNome("nomeTeste")

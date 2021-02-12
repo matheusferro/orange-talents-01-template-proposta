@@ -12,6 +12,16 @@ public class SolicitacaoAnaliseResponse {
     @JsonProperty
     private String resultadoSolicitacao;
 
+    public SolicitacaoAnaliseResponse(String documento,
+                                      String nome,
+                                      Long idProposta,
+                                      String resultadoSolicitacao) {
+        this.documento = documento;
+        this.nome = nome;
+        this.idProposta = idProposta;
+        this.resultadoSolicitacao = resultadoSolicitacao;
+    }
+
     public String getResultadoSolicitacao() {
         return resultadoSolicitacao;
     }

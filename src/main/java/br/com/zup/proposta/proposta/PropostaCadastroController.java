@@ -9,6 +9,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class PropostaCadastroController {
@@ -22,11 +24,13 @@ public class PropostaCadastroController {
     }
 
     @PostMapping("/proposta")
-    public ResponseEntity<PropostaCadastroResponse> criar(@RequestBody @Valid PropostaCadastroRequest request,
+    public ResponseEntity<?> criar(@RequestBody @Valid PropostaCadastroRequest request,
                                    UriComponentsBuilder uriBuilder){
 
         if(request.isDocumentoCadastrado(propostaRepository)){
-            return ResponseEntity.unprocessableEntity().build();
+            Map<String,String> response = new HashMap<>();
+            response.put("mensagem", "Proposta já feita.");
+            return ResponseEntity.unprocessableEntity().body(response);
         }
 
         Proposta proposta = request.toModel();
