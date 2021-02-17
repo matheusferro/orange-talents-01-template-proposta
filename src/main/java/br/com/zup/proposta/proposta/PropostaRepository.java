@@ -10,7 +10,7 @@ public interface PropostaRepository extends JpaRepository<Proposta, Long> {
 
     boolean existsByDocumento(String documento);
 
-    List<Proposta> findByStatusAndNumeroCartaoIsNull(Status elegivel);
+    List<Proposta> findByStatusAndCartaoIsNull(Status elegivel);
 
     @Query("SELECT new br.com.zup.proposta.proposta.PropostaStatusResponse(p.status) FROM Proposta p WHERE p.id = :idProposta")
     Optional<PropostaStatusResponse> findStatusById(Long idProposta);

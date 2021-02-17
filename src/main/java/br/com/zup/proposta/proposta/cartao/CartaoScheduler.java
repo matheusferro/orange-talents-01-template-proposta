@@ -27,7 +27,7 @@ public class CartaoScheduler {
     public void verificarCartaoDeCredito(){
         //TODO: Verificar se é bom mesmo utilizar List<Proposta> ou utilizar uma outra classe.
 
-        List<Proposta> propostas = propostaRepository.findByStatusAndNumeroCartaoIsNull(Status.ELEGIVEL);
+        List<Proposta> propostas = propostaRepository.findByStatusAndCartaoIsNull(Status.ELEGIVEL);
 
         for (Proposta proposta: propostas) {
             CartaoGeradoResponse response = null;
@@ -42,7 +42,7 @@ public class CartaoScheduler {
             if(response != null
                     && !response.getId().isEmpty()
                     && proposta.getId().equals(response.getIdProposta())){
-                proposta.definirCartao(response.getId(), propostaRepository);
+                proposta.definirCartao(response, propostaRepository);
             }
         }
 

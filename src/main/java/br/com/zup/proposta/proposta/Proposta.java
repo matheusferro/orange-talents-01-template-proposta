@@ -1,6 +1,8 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.proposta.cartao.AnaliseClient;
+import br.com.zup.proposta.proposta.cartao.CartaoGeradoResponse;
 import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
 import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.endereco.Endereco;
@@ -47,7 +49,8 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private Status status = Status.NAO_ELEGIVEL;
 
-    private String numeroCartao;
+    @OneToOne(mappedBy = "proposta",cascade = CascadeType.ALL)
+    private Cartao cartao;
 
     @Deprecated
     Proposta(){}
@@ -95,13 +98,14 @@ public class Proposta {
 
     /**
      * Metodo utilizado no scheduler para cadastro de número do cartão.
-     * @param numeroCartao
+     * @param cartaoGerado
      * @param propostaRepository
      */
-    public void definirCartao(String numeroCartao, PropostaRepository propostaRepository) {
-        notNull(numeroCartao, "Não é possível definir null para o valor do cartão.");
+    public void definirCartao(CartaoGeradoResponse cartaoGerado, PropostaRepository propostaRepository) {
+        notNull(cartaoGerado, "Não é possível definir null para o valor do cartão.");
         notNull(propostaRepository, "Repository invalido.");
-        this.numeroCartao = numeroCartao;
+
+        this.cartao = new Cartao(cartaoGerado.getId(), this);
         this.status = Status.CONCLUIDO;
         propostaRepository.save(this);
     }
