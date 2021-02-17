@@ -131,23 +131,23 @@ services:
     depends_on:
       - prometheus
 
-    apiSpring:
-      build:
-        context: ./
-        dockerfile: ./Dockerfile
-      image: zup/proposta
-      ports:
-        - 8080:8080
-      environment:
-        DB_DRIVER: org.postgresql.Driver
-        DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_propostas?createDatabaseIfNotExist=true&useSSL=false
-        DB_DIALECT: org.hibernate.dialect.PostgreSQL95Dialect
-        DB_USER: keycloak
-        DB_PWD: password
-        SERVICE_ANALISE_SOLICITACAO: http://analise:9999
-        SERVICE_CARTAO: http://contas:8888
-      depends_on:
-        - postgres
+  apiSpring:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: zup/proposta
+    ports:
+      - 8080:8080
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_propostas?createDatabaseIfNotExist=true&useSSL=false
+      DB_DIALECT: org.hibernate.dialect.PostgreSQL95Dialect
+      DB_USER: keycloak
+      DB_PWD: password
+      SERVICE_ANALISE_SOLICITACAO: http://analise:9999
+      SERVICE_CARTAO: http://contas:8888
+    depends_on:
+      - postgres
 
 volumes:
   grafana-volume:
