@@ -16,7 +16,7 @@ public class PropostaConsultaController {
         this.propostaRepository = propostaRepository;
     }
 
-    @GetMapping(value = "/proposta/{idProposta}")
+    @GetMapping(value = "/api/proposta/{idProposta}")
     public ResponseEntity<PropostaStatusResponse> consultaStatus(@PathVariable("idProposta") Long idProposta){
         Optional<PropostaStatusResponse> response = propostaRepository.findStatusById(idProposta);
 

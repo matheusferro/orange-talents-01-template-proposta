@@ -23,7 +23,7 @@ public class PropostaCadastroController {
         this.analise = analise;
     }
 
-    @PostMapping("/proposta")
+    @PostMapping("/api/proposta")
     public ResponseEntity<?> criar(@RequestBody @Valid PropostaCadastroRequest request,
                                    UriComponentsBuilder uriBuilder){
 

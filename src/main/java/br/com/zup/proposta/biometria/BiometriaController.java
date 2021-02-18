@@ -22,7 +22,7 @@ public class BiometriaController {
     }
 
     @Transactional
-    @PostMapping("/biometria/{idCartao}")
+    @PostMapping("/api/biometria/{idCartao}")
     public ResponseEntity<?> criarBiometria(@PathVariable("idCartao") Long idCartao,
                                             @RequestBody @Valid BiometriaCadastroRequest request,
                                             UriComponentsBuilder uriBuilder) throws UnsupportedEncodingException {
