@@ -1,5 +1,6 @@
 package br.com.zup.proposta.proposta.cartao;
 
+import br.com.zup.proposta.cartao.CartaoClient;
 import br.com.zup.proposta.proposta.Proposta;
 import br.com.zup.proposta.proposta.PropostaRepository;
 import br.com.zup.proposta.proposta.Status;
