@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.1</spring-cloud.version>
+		<common-codec.version>1.9</common-codec.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -76,6 +77,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${common-codec.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

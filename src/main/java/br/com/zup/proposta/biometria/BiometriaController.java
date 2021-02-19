@@ -4,13 +4,13 @@ import br.com.zup.proposta.cartao.Cartao;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.Base64;
 
 @RestController
 public class BiometriaController {
@@ -27,9 +27,7 @@ public class BiometriaController {
                                             @RequestBody @Valid BiometriaCadastroRequest request,
                                             UriComponentsBuilder uriBuilder) throws UnsupportedEncodingException {
         //Verifica se é Base64.
-        try {
-            byte[] decodedString = Base64.getDecoder().decode(request.getBiometria());
-        }catch (IllegalArgumentException exp){
+        if(!Base64.isBase64(request.getBiometria())){
             return ResponseEntity.badRequest().build();
         }
 
