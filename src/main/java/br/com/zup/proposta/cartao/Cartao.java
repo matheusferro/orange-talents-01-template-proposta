@@ -2,10 +2,10 @@ package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.biometria.Biometria;
 import br.com.zup.proposta.cartao.bloqueio.Bloqueio;
+import br.com.zup.proposta.cartao.viagem.Viagem;
 import br.com.zup.proposta.proposta.Proposta;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -31,8 +31,11 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao")
     private List<Biometria> biometria;
 
-    @OneToOne(mappedBy = "cartao", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "cartao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Bloqueio bloqueio;
+
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.ALL)
+    private List<Viagem> viagem;
 
     @Deprecated
     Cartao(){}
@@ -55,18 +58,18 @@ public class Cartao {
         return status;
     }
 
-    /**
-     * Metodo espera ser invocado dentro de uma transação.
-     * Para atualizar os dados do objeto e ser sincronizado futuramente.
-     *
-     * @param clientHost
-     * @param request
-     */
-    public void bloquearCartao(@NotNull String clientHost, @NotNull HttpServletRequest request) {
+    public void bloquearCartao(@NotNull String clientHost, @NotNull String userAgent, CartaoRepository cartaoRepository) {
         notNull(clientHost, "O clientHost não pode ser null.");
-        notNull(request, "request não pode ser null.");
+        notNull(userAgent, "User-Agent não pode ser null.");
+        notNull(cartaoRepository, "Repository não pode ser null.");
 
         this.status = CartaoStatus.BLOQUEADO;
-        this.bloqueio = new Bloqueio(this, clientHost, request.getHeader("User-Agent"));
+        this.bloqueio = new Bloqueio(this, clientHost, userAgent);
+        cartaoRepository.save(this);
+    }
+
+    public void adicionarViagem(Viagem viagem, CartaoRepository cartaoRepository) {
+        this.viagem.add(viagem);
+        cartaoRepository.save(this);
     }
 }
