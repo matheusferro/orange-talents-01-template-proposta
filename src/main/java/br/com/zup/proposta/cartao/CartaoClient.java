@@ -1,6 +1,9 @@
 package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.cartao.bloqueio.BloqueioCartaoRequest;
+import br.com.zup.proposta.cartao.bloqueio.BloqueioCartaoResponse;
+import br.com.zup.proposta.cartao.carteira.CadastroCarteiraResponseClient;
+import br.com.zup.proposta.cartao.carteira.CarteiraRequest;
 import br.com.zup.proposta.cartao.viagem.AvisoViagemRequest;
 import br.com.zup.proposta.cartao.viagem.AvisoViagemResponseClient;
 import br.com.zup.proposta.proposta.cartao.CartaoGeradoResponse;
@@ -21,4 +24,7 @@ public interface CartaoClient {
 
     @PostMapping(path = "/api/cartoes/{idCartao}/avisos")
     AvisoViagemResponseClient avisoViagem(@PathVariable(value = "idCartao") String idCartao, @RequestBody AvisoViagemRequest request);
+
+    @PostMapping(path = "/api/cartoes/{idCartao}/carteiras")
+    CadastroCarteiraResponseClient cadastroCarteira(@PathVariable(value = "idCartao") String idCartao, @RequestBody CarteiraRequest request);
 }

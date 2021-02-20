@@ -2,6 +2,7 @@ package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.biometria.Biometria;
 import br.com.zup.proposta.cartao.bloqueio.Bloqueio;
+import br.com.zup.proposta.cartao.carteira.Carteira;
 import br.com.zup.proposta.cartao.viagem.Viagem;
 import br.com.zup.proposta.proposta.Proposta;
 
@@ -37,6 +38,9 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.ALL)
     private List<Viagem> viagem;
 
+    @OneToMany(mappedBy = "cartao",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Carteira> carteira;
+
     @Deprecated
     Cartao(){}
 
@@ -46,8 +50,8 @@ public class Cartao {
         this.status = CartaoStatus.DESBLOQUEADO;
     }
 
-    public Bloqueio getBloqueio() {
-        return bloqueio;
+    public Long getId() {
+        return id;
     }
 
     public String getNumeroCartao() {
@@ -56,6 +60,10 @@ public class Cartao {
 
     public CartaoStatus getStatus() {
         return status;
+    }
+
+    public List<Carteira> getCarteira() {
+        return carteira;
     }
 
     public void bloquearCartao(@NotNull String clientHost, @NotNull String userAgent, CartaoRepository cartaoRepository) {
@@ -69,6 +77,9 @@ public class Cartao {
     }
 
     public void adicionarViagem(Viagem viagem, CartaoRepository cartaoRepository) {
+        notNull(viagem, "Não foi possível adicionar viagem.");
+        notNull(cartaoRepository, "Repository não pode ser null.");
+
         this.viagem.add(viagem);
         cartaoRepository.save(this);
     }
