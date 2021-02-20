@@ -25,7 +25,7 @@ public interface PropostaRepository extends JpaRepository<Proposta, Long> {
     @QueryHints({
             @QueryHint(name = "javax.persistence.lock.timeout", value = (LockOptions.SKIP_LOCKED + ""))
     })
-    List<Proposta> findTop3ByStatusOrderByDataCriada(Status elegivel);
+    List<Proposta> findTop3ByStatusOrderByDataCriadaAsc(Status elegivel);
 
     @Query("SELECT new br.com.zup.proposta.proposta.PropostaStatusResponse(p.status) FROM Proposta p WHERE p.id = :idProposta")
     Optional<PropostaStatusResponse> findStatusById(Long idProposta);

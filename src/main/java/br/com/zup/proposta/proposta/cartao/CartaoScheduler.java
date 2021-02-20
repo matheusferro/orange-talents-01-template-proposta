@@ -36,7 +36,7 @@ public class CartaoScheduler {
         while(existePropostas) {
             //noinspection ConstantConditions
             existePropostas = transactionManager.execute((transactionStatus -> {
-                List<Proposta> propostas = propostaRepository.findTop3ByStatusOrderByDataCriada(Status.ELEGIVEL);
+                List<Proposta> propostas = propostaRepository.findTop3ByStatusOrderByDataCriadaAsc(Status.ELEGIVEL);
                 if (propostas.isEmpty()) {
                     return false;
                 }
