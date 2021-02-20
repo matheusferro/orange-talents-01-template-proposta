@@ -7,6 +7,7 @@ import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
 import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.endereco.Endereco;
 import feign.FeignException;
+import org.hibernate.annotations.CreationTimestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -45,6 +47,9 @@ public class Proposta {
     @NotNull
     @Embedded
     private Endereco endereco;
+
+    @CreationTimestamp
+    private LocalDateTime dataCriada;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.NAO_ELEGIVEL;

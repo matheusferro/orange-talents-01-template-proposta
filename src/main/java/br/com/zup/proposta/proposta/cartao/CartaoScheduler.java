@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -19,32 +20,37 @@ public class CartaoScheduler {
 
     private CartaoClient cartaoClient;
 
-    public CartaoScheduler(PropostaRepository propostaRepository, CartaoClient cartaoClient) {
+    private TransactionTemplate transactionManager;
+
+    public CartaoScheduler(PropostaRepository propostaRepository,
+                           CartaoClient cartaoClient,
+                           TransactionTemplate transactionManager) {
         this.propostaRepository = propostaRepository;
         this.cartaoClient = cartaoClient;
+        this.transactionManager = transactionManager;
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 15000)
     public void verificarCartaoDeCredito(){
-        //TODO: Verificar se é bom mesmo utilizar List<Proposta> ou utilizar uma outra classe.
-
-        List<Proposta> propostas = propostaRepository.findByStatusAndCartaoIsNull(Status.ELEGIVEL);
-
-        for (Proposta proposta: propostas) {
-            CartaoGeradoResponse response = null;
-
-            try {
-                response = cartaoClient.cartaoGerado(proposta.getId());
-            }catch (FeignException exception){
-                Logger logger = LoggerFactory.getLogger(CartaoScheduler.class);
-                logger.info("FeignException - CARTÃO NAO ENCONTRADO.");
-            }
-
-            if(response != null
-                    && !response.getId().isEmpty()
-                    && proposta.getId().equals(response.getIdProposta())){
-                proposta.definirCartao(response, propostaRepository);
-            }
+        boolean existePropostas = true;
+        while(existePropostas) {
+            //noinspection ConstantConditions
+            existePropostas = transactionManager.execute((transactionStatus -> {
+                List<Proposta> propostas = propostaRepository.findTop3ByStatusOrderByDataCriada(Status.ELEGIVEL);
+                if (propostas.isEmpty()) {
+                    return false;
+                }
+                for (Proposta proposta : propostas) {
+                    try {
+                        CartaoGeradoResponse response = cartaoClient.cartaoGerado(proposta.getId());
+                        proposta.definirCartao(response, propostaRepository);
+                    } catch (FeignException exception) {
+                        Logger logger = LoggerFactory.getLogger(CartaoScheduler.class);
+                        logger.info("FeignException - CARTÃO NAO ENCONTRADO.");
+                    }
+                }
+                return true;
+            }));
         }
 
     }
