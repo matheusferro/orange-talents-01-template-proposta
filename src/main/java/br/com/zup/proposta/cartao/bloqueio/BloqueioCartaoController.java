@@ -44,7 +44,7 @@ public class BloqueioCartaoController {
         }
 
         //Cartão já bloqueado - retornar 422 para erro de negócio.
-        if(cartao.get().getBloqueio() != null || cartao.get().getStatus().equals(CartaoStatus.BLOQUEADO)){
+        if(cartao.get().getStatus().equals(CartaoStatus.BLOQUEADO)){
             return ResponseEntity.unprocessableEntity().build();
         }
 

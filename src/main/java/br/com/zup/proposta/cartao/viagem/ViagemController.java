@@ -43,7 +43,7 @@ public class ViagemController {
             return ResponseEntity.notFound().build();
         }
 
-        if(cartao.get().getStatus().equals(CartaoStatus.BLOQUEADO) || cartao.get().getBloqueio() != null){
+        if(cartao.get().getStatus().equals(CartaoStatus.BLOQUEADO)){
             return ResponseEntity.badRequest().build();
         }
 
