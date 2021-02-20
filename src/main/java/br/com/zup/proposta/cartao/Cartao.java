@@ -21,9 +21,11 @@ public class Cartao {
     private Long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String numeroCartao;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CartaoStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)

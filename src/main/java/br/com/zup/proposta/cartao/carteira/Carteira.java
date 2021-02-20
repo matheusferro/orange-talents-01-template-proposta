@@ -19,7 +19,6 @@ public class Carteira {
     @Enumerated(EnumType.STRING)
     private TipoCarteira tipoCarteira;
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     private Cartao cartao;
 

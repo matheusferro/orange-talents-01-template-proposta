@@ -52,6 +52,7 @@ public class Proposta {
     private LocalDateTime dataCriada;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status = Status.NAO_ELEGIVEL;
 
     @OneToOne(mappedBy = "proposta",cascade = CascadeType.ALL)

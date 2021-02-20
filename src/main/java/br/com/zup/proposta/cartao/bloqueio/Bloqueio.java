@@ -18,9 +18,11 @@ public class Bloqueio {
     private Cartao cartao;
 
     @NotBlank
+    @Column(nullable = false)
     private String ipCliente;
 
     @NotBlank
+    @Column(nullable = false)
     private String userAgent;
 
     @CreationTimestamp

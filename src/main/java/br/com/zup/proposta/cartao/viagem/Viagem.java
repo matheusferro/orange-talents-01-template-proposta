@@ -17,15 +17,19 @@ public class Viagem {
     private Long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String destino;
 
     @NotNull
+    @Column(nullable = false)
     private LocalDate terminoViagem;
 
     @NotBlank
+    @Column(nullable = false)
     private String ipCliente;
 
     @NotBlank
+    @Column(nullable = false)
     private String userAgent;
 
     @ManyToOne(cascade = CascadeType.ALL)
