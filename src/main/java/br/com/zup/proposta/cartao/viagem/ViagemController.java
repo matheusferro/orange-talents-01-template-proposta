@@ -6,6 +6,8 @@ import br.com.zup.proposta.cartao.CartaoRepository;
 import br.com.zup.proposta.cartao.CartaoStatus;
 import br.com.zup.proposta.cartao.service.ClientHostResolver;
 import feign.FeignException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,18 +27,33 @@ public class ViagemController {
 
     private CartaoClient cartaoClient;
 
+    private Tracer tracer;
+
     public ViagemController(ClientHostResolver hostResolver,
                             CartaoRepository cartaoRepository,
-                            CartaoClient cartaoClient) {
+                            CartaoClient cartaoClient,
+                            Tracer tracer) {
         this.hostResolver = hostResolver;
         this.cartaoRepository = cartaoRepository;
         this.cartaoClient = cartaoClient;
+        this.tracer = tracer;
     }
 
     @PostMapping("/api/cartao/{idCartao}/viagem")
     public ResponseEntity<?> avisoViagem(@PathVariable("idCartao") Long idCartao,
                                          @RequestBody @Valid AvisoViagemRequest request,
                                          HttpServletRequest requestInfo){
+        /**
+         *  MELHORANDO O TROUBLESHOOTING.
+         */
+        Span activeSpan = tracer.activeSpan();
+        //TAGS
+        activeSpan.setTag("idCartao", idCartao);
+        //BAGGAGE
+        activeSpan.setBaggageItem("traceID", "0001");
+        //LOG
+        activeSpan.log("registroViagem");
+
         String clientHost = hostResolver.resolve();
         Optional<Cartao> cartao = cartaoRepository.findById(idCartao);
         if(cartao.isEmpty()){

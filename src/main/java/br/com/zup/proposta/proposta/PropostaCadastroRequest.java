@@ -62,4 +62,8 @@ public class PropostaCadastroRequest {
     public boolean isDocumentoCadastrado(PropostaRepository repository) {
         return repository.existsByDocumento(this.documento);
     }
+
+    public String getEmail() {
+        return email;
+    }
 }

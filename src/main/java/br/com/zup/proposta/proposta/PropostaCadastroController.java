@@ -1,6 +1,13 @@
 package br.com.zup.proposta.proposta;
 
 import br.com.zup.proposta.proposta.cartao.AnaliseClient;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
+import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
+import feign.FeignException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,16 +23,32 @@ import java.util.Map;
 public class PropostaCadastroController {
 
     private final PropostaRepository propostaRepository;
+
     private final AnaliseClient analise;
 
-    public PropostaCadastroController(PropostaRepository propostaRepository, AnaliseClient analise) {
+    private Tracer tracer;
+
+    public PropostaCadastroController(PropostaRepository propostaRepository,
+                                      AnaliseClient analise,
+                                      Tracer tracer) {
         this.propostaRepository = propostaRepository;
         this.analise = analise;
+        this.tracer = tracer;
     }
 
     @PostMapping("/api/proposta")
     public ResponseEntity<?> criar(@RequestBody @Valid PropostaCadastroRequest request,
                                    UriComponentsBuilder uriBuilder){
+        /**
+         *  MELHORANDO O TROUBLESHOOTING.
+         */
+        Span activeSpan = tracer.activeSpan();
+        //TAGS
+        activeSpan.setTag("user.email", request.getEmail());
+        //BAGGAGE
+        activeSpan.setBaggageItem("traceID", "0001");
+        //LOG
+        activeSpan.log("criarProposta");
 
         if(request.isDocumentoCadastrado(propostaRepository)){
             Map<String,String> response = new HashMap<>();
@@ -36,7 +59,13 @@ public class PropostaCadastroController {
         Proposta proposta = request.toModel();
         propostaRepository.save(proposta);
 
-        proposta.definirStatus(analise, propostaRepository);
+        try {
+            SolicitacaoAnaliseResponse analiseResponse = analise.solicitacaoAnalise(new SolicitacaoAnaliseRequest(proposta));
+            proposta.definirStatus(analiseResponse, propostaRepository);
+        }catch(FeignException exception){
+            Logger logger = LoggerFactory.getLogger(PropostaCadastroController.class);
+            logger.info("FeignException - CADASTRO DE DOCUMENTO COM INICIO 3.");
+        }
 
         URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).body(new PropostaCadastroResponse(proposta));

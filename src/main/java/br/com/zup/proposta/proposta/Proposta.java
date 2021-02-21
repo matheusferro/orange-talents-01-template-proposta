@@ -1,15 +1,10 @@
 package br.com.zup.proposta.proposta;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.proposta.cartao.AnaliseClient;
 import br.com.zup.proposta.proposta.cartao.CartaoGeradoResponse;
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
 import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.endereco.Endereco;
-import feign.FeignException;
 import org.hibernate.annotations.CreationTimestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -88,18 +83,15 @@ public class Proposta {
     /**
      * Define status com base no resultado recebido da api de verificação
      * de elegibilidade.
-     * @param analise
+     * @param analiseResponse
      * @param propostaRepository
      */
-    public void definirStatus(AnaliseClient analise, PropostaRepository propostaRepository) {
-        try {
-            SolicitacaoAnaliseResponse analiseResponse = analise.solicitacaoAnalise(new SolicitacaoAnaliseRequest(this));
-            this.status = Status.getStatus(analiseResponse);
-            propostaRepository.save(this);
-        }catch(FeignException exception){
-            Logger logger = LoggerFactory.getLogger(Proposta.class);
-            logger.info("FeignException - CADASTRO DE DOCUMENTO COM INICIO 3.");
-        }
+    public void definirStatus(SolicitacaoAnaliseResponse analiseResponse, PropostaRepository propostaRepository) {
+        notNull(analiseResponse, "Não é posspível definir status null.");
+        notNull(propostaRepository, "Não é posspível definir status com repository null.");
+
+        this.status = Status.getStatus(analiseResponse);
+        propostaRepository.save(this);
     }
 
     /**

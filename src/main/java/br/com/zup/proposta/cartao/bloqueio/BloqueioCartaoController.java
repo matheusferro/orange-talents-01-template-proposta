@@ -6,6 +6,8 @@ import br.com.zup.proposta.cartao.CartaoRepository;
 import br.com.zup.proposta.cartao.CartaoStatus;
 import br.com.zup.proposta.cartao.service.ClientHostResolver;
 import feign.FeignException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,16 +26,31 @@ public class BloqueioCartaoController {
 
     private ClientHostResolver hostResolver;
 
+    private Tracer tracer;
+
     public BloqueioCartaoController(CartaoRepository cartaoRepository,
                                     CartaoClient cartaoClient,
-                                    ClientHostResolver hostResolver) {
+                                    ClientHostResolver hostResolver,
+                                    Tracer tracer) {
         this.cartaoRepository = cartaoRepository;
         this.cartaoClient = cartaoClient;
         this.hostResolver = hostResolver;
+        this.tracer = tracer;
     }
 
     @PostMapping(path = "/api/cartao/{idCartao}/bloqueio")
     public ResponseEntity<?> bloquearCartao(@PathVariable @Valid Long idCartao, HttpServletRequest request){
+
+        /**
+         *  MELHORANDO O TROUBLESHOOTING.
+         */
+        Span activeSpan = tracer.activeSpan();
+        //TAGS
+        activeSpan.setTag("idCartao", idCartao);
+        //BAGGAGE
+        activeSpan.setBaggageItem("traceID", "0001");
+        //LOG
+        activeSpan.log("bloqueioCartao");
 
         String clientHost = hostResolver.resolve();
         Optional<Cartao> cartao = cartaoRepository.findById(idCartao);
