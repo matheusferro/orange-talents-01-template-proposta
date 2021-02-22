@@ -1,21 +1,18 @@
 package br.com.zup.proposta.proposta;
 
-import br.com.zup.proposta.proposta.cartao.AnaliseClient;
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
+import br.com.zup.proposta.proposta.analise.AnaliseClient;
+import br.com.zup.proposta.proposta.analise.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.request.PropostaCadastroRequestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
