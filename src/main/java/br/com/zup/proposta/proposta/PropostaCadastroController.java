@@ -1,8 +1,8 @@
 package br.com.zup.proposta.proposta;
 
-import br.com.zup.proposta.proposta.cartao.AnaliseClient;
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseRequest;
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
+import br.com.zup.proposta.proposta.analise.AnaliseClient;
+import br.com.zup.proposta.proposta.analise.SolicitacaoAnaliseRequest;
+import br.com.zup.proposta.proposta.analise.SolicitacaoAnaliseResponse;
 import feign.FeignException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
