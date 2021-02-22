@@ -149,6 +149,7 @@ services:
       SERVICE_CARTAO: http://contas:8888
       KEYCLOAK_ISSUER_URI: http://keycloak:8080/auth/realms/proposta
       KEYCLOAK_JWKS_URI: http://keycloak:8080/auth/realms/proposta/protocol/openid-connect/certs
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
     depends_on:
       - postgres
       - keycloak
