@@ -6,7 +6,7 @@ import br.com.zup.proposta.cartao.carteira.CadastroCarteiraResponseClient;
 import br.com.zup.proposta.cartao.carteira.CarteiraRequest;
 import br.com.zup.proposta.cartao.viagem.AvisoViagemRequest;
 import br.com.zup.proposta.cartao.viagem.AvisoViagemResponseClient;
-import br.com.zup.proposta.proposta.cartao.CartaoGeradoResponse;
+import br.com.zup.proposta.cartao.schedule.CartaoGeradoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

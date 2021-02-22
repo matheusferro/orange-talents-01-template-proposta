@@ -1,4 +1,4 @@
-package br.com.zup.proposta.proposta.cartao;
+package br.com.zup.proposta.cartao.schedule;
 
 public class CartaoGeradoResponse {
 

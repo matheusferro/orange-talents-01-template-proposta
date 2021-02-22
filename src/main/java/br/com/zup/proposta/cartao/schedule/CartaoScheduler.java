@@ -1,4 +1,4 @@
-package br.com.zup.proposta.proposta.cartao;
+package br.com.zup.proposta.cartao.schedule;
 
 import br.com.zup.proposta.cartao.CartaoClient;
 import br.com.zup.proposta.proposta.Proposta;
@@ -31,7 +31,7 @@ public class CartaoScheduler {
     }
 
     @Scheduled(fixedRate = 15000)
-    public void verificarCartaoDeCredito(){
+    public void verificarCartaoCriado(){
         boolean existePropostas = true;
         while(existePropostas) {
             //noinspection ConstantConditions
