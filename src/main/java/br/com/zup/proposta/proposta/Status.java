@@ -1,6 +1,6 @@
 package br.com.zup.proposta.proposta;
 
-import br.com.zup.proposta.proposta.cartao.SolicitacaoAnaliseResponse;
+import br.com.zup.proposta.proposta.analise.SolicitacaoAnaliseResponse;
 
 public enum Status {
     ELEGIVEL,
