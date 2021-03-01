@@ -4,7 +4,7 @@ import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.cartao.schedule.CartaoGeradoResponse;
 import br.com.zup.proposta.proposta.analise.SolicitacaoAnaliseResponse;
 import br.com.zup.proposta.proposta.endereco.Endereco;
-import org.hibernate.annotations.ColumnTransformer;
+import br.com.zup.proposta.security.EncryptConverter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -34,16 +34,10 @@ public class Proposta {
     private String email;
 
     /**
-     * Utilizando criptografia do postgresql. Necessário ter a variável encrypt.key
-     * settada no postgresql.conf.
-     *
-     * https://vladmihalcea.com/how-to-encrypt-and-decrypt-data-with-hibernate/
+     * Utilizando a biblioteca JASYPT
      */
-    @ColumnTransformer(
-            read = "pgp_sym_decrypt(documento, current_setting('encrypt.key'))",
-            write = "pgp_sym_encrypt(?, current_setting('encrypt.key'))"
-    )
-    @Column(unique = true, columnDefinition = "bytea")
+    @Convert(converter = EncryptConverter.class)
+    @Column(unique = true)
     private String documento;
 
     @Min(value = 0)

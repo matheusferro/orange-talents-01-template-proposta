@@ -97,6 +97,14 @@
 			<artifactId>opentracing-spring-jaeger-web-starter</artifactId>
 			<version>3.3.1</version>
 		</dependency>
+
+		<!-- Dependencia para encriptar e descriptar -->
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<version>1.9.3</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
